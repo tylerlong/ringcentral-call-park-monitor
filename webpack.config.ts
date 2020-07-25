@@ -6,7 +6,7 @@ import path from 'path';
 const config: webpack.Configuration = {
   mode: 'development',
   devtool: 'source-map',
-  entry: ['./src/index.tsx'],
+  entry: './src/index.tsx',
   output: {
     path: path.resolve(__dirname, 'docs'),
   },
