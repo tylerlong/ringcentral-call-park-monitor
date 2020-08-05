@@ -54,7 +54,14 @@ const store = SubX.proxy<StoreType>({
     if (token !== null) {
       this.token = token;
       rc.token = token;
-      await rc.refresh(); // refresh to get a brand new access token
+      try {
+        await rc.refresh(); // refresh to get a brand new access token
+      } catch (e) {
+        // refresh token invalid
+        await localforage.clear();
+        window.location.reload(false);
+        return;
+      }
       await localforage.setItem('token', rc.token);
       const r = await rc
         .restapi()
