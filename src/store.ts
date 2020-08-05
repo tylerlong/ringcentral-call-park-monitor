@@ -4,6 +4,7 @@ import RingCentral from '@rc-ex/core';
 import localforage from 'localforage';
 import AuthorizeUriExtension from '@rc-ex/authorize-uri';
 import {CheckboxValueType} from 'antd/lib/checkbox/Group';
+import PubNubExtension, {Subscription} from '@rc-ex/pubnub';
 
 export type StoreType = {
   ready: boolean;
@@ -27,6 +28,10 @@ const rc = new RingCentral({
 });
 const authorizeUriExtension = new AuthorizeUriExtension();
 rc.installExtension(authorizeUriExtension);
+const pubNubExtension = new PubNubExtension();
+rc.installExtension(pubNubExtension);
+
+let subscription: Subscription | undefined;
 
 const store = SubX.proxy<StoreType>({
   ready: false,
@@ -68,7 +73,19 @@ const store = SubX.proxy<StoreType>({
     window.location.reload(false);
   },
   async onExtensionChange(checkboxValueTypes: CheckboxValueType[]) {
-    console.log(checkboxValueTypes);
+    await subscription?.revoke(); // revoke existing subscription
+    subscription = undefined;
+    if (checkboxValueTypes.length > 0) {
+      subscription = await pubNubExtension.subscribe(
+        checkboxValueTypes.map(
+          cvt => `/restapi/v1.0/account/~/extension/${cvt}/telephony/sessions`
+        ),
+        event => {
+          console.log(event);
+        }
+      );
+      console.log('Subscription is ready');
+    }
   },
 });
 

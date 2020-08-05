@@ -10,6 +10,7 @@
   "dependencies": {
     "@rc-ex/authorize-uri": "^0.4.2",
     "@rc-ex/core": "^0.4.3",
+    "@rc-ex/pubnub": "^0.4.9",
     "antd": "^4.5.2",
     "localforage": "^1.9.0",
     "react": "^16.13.1",
