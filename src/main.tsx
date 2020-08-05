@@ -45,7 +45,7 @@ class Main extends Component<PropsStore> {
     const options = store.extensions.map(
       ext =>
         ({
-          label: ext.extensionNumber,
+          label: `${ext.extensionNumber} - ${ext.name}`,
           value: ext.id,
         } as CheckboxOptionType)
     );
