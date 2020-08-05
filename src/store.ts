@@ -3,6 +3,7 @@ import {TokenInfo, GetExtensionInfoResponse} from '@rc-ex/core/lib/definitions';
 import RingCentral from '@rc-ex/core';
 import localforage from 'localforage';
 import AuthorizeUriExtension from '@rc-ex/authorize-uri';
+import {CheckboxValueType} from 'antd/lib/checkbox/Group';
 
 export type StoreType = {
   ready: boolean;
@@ -12,6 +13,7 @@ export type StoreType = {
   init: Function;
   load: Function;
   logout: Function;
+  onExtensionChange: Function;
 };
 
 const redirectUri = window.location.origin + window.location.pathname;
@@ -47,6 +49,8 @@ const store = SubX.proxy<StoreType>({
     if (token !== null) {
       this.token = token;
       rc.token = token;
+      await rc.refresh(); // refresh to get a brand new access token
+      await localforage.setItem('token', rc.token);
       const r = await rc
         .restapi()
         .account()
@@ -62,6 +66,9 @@ const store = SubX.proxy<StoreType>({
   async logout() {
     await localforage.clear();
     window.location.reload(false);
+  },
+  async onExtensionChange(checkboxValueTypes: CheckboxValueType[]) {
+    console.log(checkboxValueTypes);
   },
 });
 

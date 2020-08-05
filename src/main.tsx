@@ -1,8 +1,9 @@
 import React from 'react';
 import {Component} from 'react-subx';
-import {Spin, Button} from 'antd';
+import {Spin, Button, Checkbox} from 'antd';
 
 import {StoreType} from './store';
+import {CheckboxOptionType} from 'antd/lib/checkbox/Group';
 
 type PropsStore = {
   store: StoreType;
@@ -10,14 +11,19 @@ type PropsStore = {
 class App extends Component<PropsStore> {
   render() {
     const store = this.props.store;
-    return store.ready ? (
-      store.token ? (
-        <Main store={store} />
-      ) : (
-        <Login store={store} />
-      )
-    ) : (
-      <Spin size="large" />
+    return (
+      <>
+        <h1>RingCentral Call Park Monitor</h1>
+        {store.ready ? (
+          store.token ? (
+            <Main store={store} />
+          ) : (
+            <Login store={store} />
+          )
+        ) : (
+          <Spin size="large" />
+        )}
+      </>
     );
   }
 }
@@ -36,16 +42,25 @@ class Login extends Component<PropsStore> {
 class Main extends Component<PropsStore> {
   render() {
     const store = this.props.store;
+    const options = store.extensions.map(
+      ext =>
+        ({
+          label: ext.extensionNumber,
+          value: ext.id,
+        } as CheckboxOptionType)
+    );
     return (
       <>
-        <Button danger onClick={() => store.logout()} id="logout-button">
+        <Button danger onClick={() => store.logout()}>
           Logout
         </Button>
-        <ul>
-          {store.extensions.map(ext => (
-            <li key={ext.id}>{ext.extensionNumber}</li>
-          ))}
-        </ul>
+        <h2>Please select the extensions you want to monitor:</h2>
+        <Checkbox.Group
+          options={options}
+          onChange={checkboxValueTypes =>
+            store.onExtensionChange(checkboxValueTypes)
+          }
+        />
       </>
     );
   }
