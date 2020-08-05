@@ -35,8 +35,19 @@ class Login extends Component<PropsStore> {
 
 class Main extends Component<PropsStore> {
   render() {
-    // const store = this.props.store;
-    return 'Main';
+    const store = this.props.store;
+    return (
+      <>
+        <Button danger onClick={() => store.logout()} id="logout-button">
+          Logout
+        </Button>
+        <ul>
+          {store.extensions.map(ext => (
+            <li key={ext.id}>{ext.extensionNumber}</li>
+          ))}
+        </ul>
+      </>
+    );
   }
 }
 
