@@ -54,6 +54,7 @@ class Main extends Component<PropsStore> {
         <Button danger onClick={() => store.logout()}>
           Logout
         </Button>
+        <h2>Open browser console to see real time log messages.</h2>
         <h2>Please select the extensions you want to monitor:</h2>
         <Checkbox.Group
           options={options}
