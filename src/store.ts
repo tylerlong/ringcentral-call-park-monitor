@@ -1,5 +1,9 @@
 import SubX from 'subx';
-import {TokenInfo, GetExtensionInfoResponse} from '@rc-ex/core/lib/definitions';
+import {
+  TokenInfo,
+  GetExtensionInfoResponse,
+  ExtensionTelephonySessionsEvent,
+} from '@rc-ex/core/lib/definitions';
 import RingCentral from '@rc-ex/core';
 import localforage from 'localforage';
 import AuthorizeUriExtension from '@rc-ex/authorize-uri';
@@ -7,7 +11,7 @@ import {CheckboxValueType} from 'antd/lib/checkbox/Group';
 import PubNubExtension, {Subscription} from '@rc-ex/pubnub';
 
 export type ParkedCall = {
-  number: number;
+  parkedNumber: string;
   telephonySessionId: string;
 };
 
@@ -94,8 +98,37 @@ const store = SubX.proxy<StoreType>({
         checkboxValueTypes.map(
           cvt => `/restapi/v1.0/account/~/extension/${cvt}/telephony/sessions`
         ),
-        event => {
-          console.log(event);
+        (event: ExtensionTelephonySessionsEvent) => {
+          console.log(JSON.stringify(event, null, 2));
+
+          /* start parking lot monitoring code */
+
+          const status = event.body?.parties?.[0].status;
+
+          // call park
+          if (
+            status?.code === 'Parked' &&
+            status?.reason === 'CallPark' &&
+            status?.parkData
+          ) {
+            this.parkingLot.push({
+              parkedNumber: status?.parkData,
+              telephonySessionId: event.body!.telephonySessionId!,
+            });
+          }
+
+          // call pick up
+          if (
+            status?.code === 'Gone' &&
+            status.reason === 'Pickup' &&
+            status.peerId
+          ) {
+            this.parkingLot = this.parkingLot.filter(
+              p => p.telephonySessionId !== status.peerId?.telephonySessionId
+            );
+          }
+
+          /* end of parking lots monitoring code */
         }
       );
       console.log('Subscription is ready');

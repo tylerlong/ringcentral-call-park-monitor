@@ -79,7 +79,7 @@ class ParkingLot extends Component<PropsStore> {
     ) : (
       <ul>
         {store.parkingLot.map(p => (
-          <li key={p.telephonySessionId}>{p.number}</li>
+          <li key={p.telephonySessionId}>{p.parkedNumber}</li>
         ))}
       </ul>
     );
