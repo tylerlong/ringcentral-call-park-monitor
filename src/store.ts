@@ -6,11 +6,17 @@ import AuthorizeUriExtension from '@rc-ex/authorize-uri';
 import {CheckboxValueType} from 'antd/lib/checkbox/Group';
 import PubNubExtension, {Subscription} from '@rc-ex/pubnub';
 
+export type ParkedCall = {
+  number: number;
+  telephonySessionId: string;
+};
+
 export type StoreType = {
   ready: boolean;
   token?: TokenInfo;
   authorizeUri: string;
   extensions: GetExtensionInfoResponse[];
+  parkingLot: ParkedCall[];
   init: Function;
   load: Function;
   logout: Function;
@@ -38,6 +44,7 @@ const store = SubX.proxy<StoreType>({
   token: undefined,
   authorizeUri: authorizeUriExtension.buildUri({redirect_uri: redirectUri}),
   extensions: [],
+  parkingLot: [],
   async init() {
     const code = urlSearchParams.get('code');
     if (code) {

@@ -54,7 +54,9 @@ class Main extends Component<PropsStore> {
         <Button danger onClick={() => store.logout()}>
           Logout
         </Button>
-        <h2>Open browser console to see real time log messages.</h2>
+        <h2>Parking Lot</h2>
+        <ParkingLot store={store} />
+        <hr />
         <h2>Please select the extensions you want to monitor:</h2>
         <Checkbox.Group
           options={options}
@@ -62,7 +64,24 @@ class Main extends Component<PropsStore> {
             store.onExtensionChange(checkboxValueTypes)
           }
         />
+        <hr />
+        <h2>Open browser console to see real time log messages.</h2>
       </>
+    );
+  }
+}
+
+class ParkingLot extends Component<PropsStore> {
+  render() {
+    const store = this.props.store;
+    return store.parkingLot.length === 0 ? (
+      'Empty'
+    ) : (
+      <ul>
+        {store.parkingLot.map(p => (
+          <li key={p.telephonySessionId}>{p.number}</li>
+        ))}
+      </ul>
     );
   }
 }
