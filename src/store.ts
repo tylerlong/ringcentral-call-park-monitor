@@ -101,7 +101,7 @@ const store = SubX.proxy<StoreType>({
         (event: ExtensionTelephonySessionsEvent) => {
           console.log(JSON.stringify(event, null, 2));
 
-          /* start parking lot monitoring code */
+          /* start of parking lot monitoring code */
 
           const status = event.body?.parties?.[0].status;
 
@@ -128,7 +128,7 @@ const store = SubX.proxy<StoreType>({
             );
           }
 
-          /* end of parking lots monitoring code */
+          /* end of parking lot monitoring code */
         }
       );
       console.log('Subscription is ready');
