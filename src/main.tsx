@@ -74,14 +74,12 @@ class Main extends Component<PropsStore> {
 class ParkingLot extends Component<PropsStore> {
   render() {
     const store = this.props.store;
-    return store.parkingLot.length === 0 ? (
-      'Empty'
-    ) : (
-      <ul>
-        {store.parkingLot.map(p => (
-          <li key={p.telephonySessionId}>{p.parkedNumber}</li>
-        ))}
-      </ul>
+    return (
+      <h1>
+        {store.parkingLot.length === 0
+          ? 'Empty'
+          : store.parkingLot.map(p => p.parkedNumber).join(', ')}
+      </h1>
     );
   }
 }
